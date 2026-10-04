@@ -124,6 +124,18 @@ client.on('messageCreate', async (m) => {
       return m.delete().catch(() => {});
     }
 
+    // +paypal : infos de paiement PayPal
+    if (cmd === 'paypal') {
+      await m.channel.send('`burpy9x@gmail.com` Family And Friend Only And Proof (No Respect=Order Cancelled)');
+      return m.delete().catch(() => {});
+    }
+
+    // +itc (ou +ltc) : adresse Litecoin
+    if (cmd === 'itc' || cmd === 'ltc') {
+      await m.channel.send('`ltc1qtgy0cunl36cpujyr06ny3n9yhhk0gyfpd026f3`');
+      return m.delete().catch(() => {});
+    }
+
     // +vouch <id> | produit | prix | paiement
     if (cmd === 'vouch') {
       const [rawTarget, product, price = 'N/A', payment = 'N/A'] = args.split('|').map((s) => s.trim());

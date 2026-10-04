@@ -13,9 +13,9 @@ for (let n = 1; n <= 5; n++) {
 }
 
 module.exports = {
-  serverName: 'Source',
+  serverName: '<:ticket:1552741225092882525> Source',
   color: 0xe11d2e, // rouge
-  description: '★★★★★ Best seller !\nChoisis une catégorie ci-dessous pour ouvrir un ticket.',
+  description: '★ ★ ★ ★ ★  •  `Legit Shop` !\n« Simple, rapide, efficace. ».',
   footer: 'Source · Shop',
 
   // Lien direct vers ton image (voir README pour l'obtenir)
@@ -34,7 +34,7 @@ module.exports = {
     nitro: {
       label: 'Nitro',
       description: 'Discord Nitro',
-      emoji: '🚀',
+      emoji: '<:nitro:1549913256301301780>',
       options: [{ label: '1 mois', price: 3.5 }],
     },
     boost: {

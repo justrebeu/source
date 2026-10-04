@@ -40,7 +40,7 @@ module.exports = {
     boost: {
       label: 'Server Boost',
       description: 'Boosts de serveur',
-      emoji: '💎',
+      emoji: '<:boost:1549915329772130385>',
       options: boostOptions,
     },
     decoration: {
@@ -53,24 +53,24 @@ module.exports = {
     snap: {
       label: 'Snap +',
       description: 'Snapchat Plus',
-      emoji: '👻',
+      emoji: '<:snapchat:1549917398939992124>',
       options: [
         { label: '3 mois', price: 6 },
         { label: '6 mois', price: 12 },
         { label: '12 mois', price: 24 },
       ],
     },
-    discord_account: { label: 'Discord compte', description: 'Comptes Discord', emoji: '👤', options: [] },
-    account: { label: 'Account', description: 'Autres comptes', emoji: '🔑', options: [] },
+    discord_account: { label: 'Discord compte', description: 'Comptes Discord', emoji: '<:account:1552760568006447114>', options: [] },
+    account: { label: 'Account', description: 'Autres comptes', emoji: '<:account:1552760568006447114>', options: [] },
     fournisseur: {
       label: 'Fournisseur',
       description: 'Accès fournisseur',
-      emoji: '📦',
+      emoji: '<:chariot:1549918971409727608>',
       options: [
         { label: 'Comptes (Netflix & +)', price: 5 },
         { label: 'Boosts & +', price: 10 },
       ],
     },
-    other: { label: 'Other', description: 'Autre demande', emoji: '❓', options: [] },
+    other: { label: 'Other', description: 'Autre demande', emoji: '<:punaise:1549926731115135107>', options: [] },
   },
 };

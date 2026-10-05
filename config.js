@@ -15,7 +15,7 @@ for (let n = 1; n <= 5; n++) {
 module.exports = {
   serverName: '<:ticket~1:1552741225092882525> Source',
   color: 0xe11d2e, // rouge
-  description: '★ ★ ★ ★ ★  •  `Legit Shop` !\n« Simple, rapide, efficace. ».',
+  description: '★ ★ ★ ★ ★  •  `Legit Shop` !\n-# « Simple, rapide, efficace. ».',
   footer: 'Source · Shop',
 
   // Lien direct vers ton image (voir README pour l'obtenir)

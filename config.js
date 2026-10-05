@@ -46,7 +46,7 @@ module.exports = {
     decoration: {
       label: 'Decoration',
       description: '',
-      emoji: '🎨',
+      emoji: '<:hashtag:1549917504749703338>',
       options: [{ label: 'Décoration', price: 1.5 }],
     },
     giveaway: { label: 'Giveaway', description: '', emoji: '🎁', options: [] },

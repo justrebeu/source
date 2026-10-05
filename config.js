@@ -23,7 +23,7 @@ module.exports = {
 
   // Moyens de paiement (emoji : unicode OU "<:nom:ID>" pour un emoji perso)
   payments: {
-    pp_balance: { label: 'PayPal Balance', description: '', emoji: '💙' },
+    pp_balance: { label: 'PayPal Balance', description: '', emoji: '<a:ppl:1556723779546124449>' },
     pp_card: { label: 'PayPal Card', description: '', emoji: '💳' },
     crypto: { label: 'Crypto (LTC)', description: '', emoji: '🪙' },
   },

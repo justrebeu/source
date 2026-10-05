@@ -13,7 +13,7 @@ for (let n = 1; n <= 5; n++) {
 }
 
 module.exports = {
-  serverName: '<:ticket:1552741225092882525> Source',
+  serverName: '<:ticket~1:1552741225092882525> Source',
   color: 0xe11d2e, // rouge
   description: '★ ★ ★ ★ ★  •  `Legit Shop` !\n« Simple, rapide, efficace. ».',
   footer: 'Source · Shop',
@@ -39,20 +39,20 @@ module.exports = {
     },
     boost: {
       label: 'Server Boost',
-      description: 'Boosts de serveur',
+      description: '',
       emoji: '<:boost:1549915329772130385>',
       options: boostOptions,
     },
     decoration: {
       label: 'Decoration',
-      description: 'Décorations de profil',
+      description: '',
       emoji: '🎨',
       options: [{ label: 'Décoration', price: 1.5 }],
     },
-    giveaway: { label: 'Giveaway', description: 'Giveaway', emoji: '🎁', options: [] },
+    giveaway: { label: 'Giveaway', description: '', emoji: '🎁', options: [] },
     snap: {
       label: 'Snap +',
-      description: 'Snapchat Plus',
+      description: '',
       emoji: '<:snapchat:1549917398939992124>',
       options: [
         { label: '3 mois', price: 6 },
@@ -60,17 +60,17 @@ module.exports = {
         { label: '12 mois', price: 24 },
       ],
     },
-    discord_account: { label: 'Discord compte', description: 'Comptes Discord', emoji: '<:account:1552760568006447114>', options: [] },
-    account: { label: 'Account', description: 'Autres comptes', emoji: '<:account:1552760568006447114>', options: [] },
+    discord_account: { label: 'Discord compte', description: '', emoji: '<:account:1552760568006447114>', options: [] },
+    account: { label: 'Account', description: '', emoji: '<:account:1552760568006447114>', options: [] },
     fournisseur: {
       label: 'Fournisseur',
-      description: 'Accès fournisseur',
+      description: '',
       emoji: '<:chariot:1549918971409727608>',
       options: [
         { label: 'Comptes (Netflix & +)', price: 5 },
         { label: 'Boosts & +', price: 10 },
       ],
     },
-    other: { label: 'Other', description: 'Autre demande', emoji: '<:punaise:1549926731115135107>', options: [] },
+    other: { label: 'Other', description: '', emoji: '<:punaise:1549926731115135107>', options: [] },
   },
 };

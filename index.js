@@ -108,8 +108,8 @@ client.on('messageCreate', async (m) => {
           Object.entries(config.products).map(([key, p]) => ({
             label: p.label,
             value: key,
-            description: p.description,
-            emoji: p.emoji,
+            description: p.description || undefined,
+            emoji: p.emoji || undefined,
           }))
         );
 
@@ -238,8 +238,8 @@ async function onSelect(i) {
         Object.entries(config.payments).map(([k, pay]) => ({
           label: pay.label,
           value: k,
-          description: pay.description,
-          emoji: pay.emoji,
+          description: pay.description || undefined,
+          emoji: pay.emoji || undefined,
         }))
       );
     const embed = new EmbedBuilder()

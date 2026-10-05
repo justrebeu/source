@@ -23,9 +23,9 @@ module.exports = {
 
   // Moyens de paiement (emoji : unicode OU "<:nom:ID>" pour un emoji perso)
   payments: {
-    pp_balance: { label: 'PayPal Balance', description: 'Depuis le solde PayPal', emoji: '💙' },
-    pp_card: { label: 'PayPal Card', description: 'Par carte bancaire via PayPal', emoji: '💳' },
-    crypto: { label: 'Crypto (LTC)', description: 'Paiement Litecoin', emoji: '🪙' },
+    pp_balance: { label: 'PayPal Balance', description: '', emoji: '💙' },
+    pp_card: { label: 'PayPal Card', description: '', emoji: '💳' },
+    crypto: { label: 'Crypto (LTC)', description: '', emoji: '🪙' },
   },
 
   // Produits. "options" = menu quantité/prix. Vide = pas de menu, prix "à définir".
@@ -33,7 +33,7 @@ module.exports = {
   products: {
     nitro: {
       label: 'Nitro',
-      description: 'Discord Nitro',
+      description: '',
       emoji: '<:nitro:1549913256301301780>',
       options: [{ label: '1 mois', price: 3.5 }],
     },

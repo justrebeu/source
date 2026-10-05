@@ -12,6 +12,12 @@ const {
   ChannelType,
   PermissionFlagsBits,
   MessageFlags,
+  ContainerBuilder,
+  MediaGalleryBuilder,
+  MediaGalleryItemBuilder,
+  TextDisplayBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
 } = require('discord.js');
 const config = require('./config');
 
@@ -95,13 +101,6 @@ client.on('messageCreate', async (m) => {
   try {
     // +panel : panel de tickets
     if (cmd === 'panel' && isAdmin) {
-      const embed = new EmbedBuilder()
-        .setColor(config.color)
-        .setTitle(`${config.serverName} Tickets`)
-        .setDescription(config.description)
-        .setFooter({ text: config.footer });
-      if (config.bannerUrl) embed.setImage(config.bannerUrl);
-
       const menu = new StringSelectMenuBuilder()
         .setCustomId('cat')
         .setPlaceholder('Choisir une catégorie...')
@@ -114,7 +113,20 @@ client.on('messageCreate', async (m) => {
           }))
         );
 
-      await m.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(menu)] });
+      // Panel en "container" : l'image est tout en haut
+      const container = new ContainerBuilder().setAccentColor(config.color);
+      if (config.bannerUrl) {
+        container.addMediaGalleryComponents(
+          new MediaGalleryBuilder().addItems(new MediaGalleryItemBuilder().setURL(config.bannerUrl))
+        );
+      }
+      container
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${config.serverName} Tickets\n${config.description}`))
+        .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents(new ActionRowBuilder().addComponents(menu))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`-# ${config.footer}`));
+
+      await m.channel.send({ components: [container], flags: MessageFlags.IsComponentsV2 });
       return m.delete().catch(() => {});
     }
 

@@ -25,7 +25,7 @@ module.exports = {
   payments: {
     pp_balance: { label: 'PayPal Balance', description: '', emoji: '<a:ppl:1556723779546124449>' },
     pp_card: { label: 'PayPal Card', description: '', emoji: '💳' },
-    crypto: { label: 'Crypto (LTC)', description: '', emoji: '🪙' },
+    crypto: { label: 'Crypto (LTC)', description: '', emoji: '<:ltc:1556724010639827089>' },
   },
 
   // Produits. "options" = menu quantité/prix. Vide = pas de menu, prix "à définir".

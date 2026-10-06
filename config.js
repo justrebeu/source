@@ -13,8 +13,11 @@ for (let n = 1; n <= 5; n++) {
 }
 
 module.exports = {
-  serverName: '<:tic:1552741225092882525> Source',
+  serverName: 'Source',
+  // Emoji perso affiché devant le titre du panel et des embeds de tickets ('' = aucun)
+  titleEmoji: '<:tic:1552741225092882525>',
   color: 0xe11d2e, // rouge
+  legitColor: 0x2b7fff, // bleu (panel "Nous sommes fiables")
   description: '★ ★ ★ ★ ★  •  `Legit Shop` !\n-# « Simple, rapide, efficace. ».',
   footer: 'Source · Shop',
 

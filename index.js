@@ -34,6 +34,7 @@ const client = new Client({
 });
 
 const fmt = (n) => `${String(n).replace('.', ',')}€`;
+const emo = config.titleEmoji ? `${config.titleEmoji} ` : '';
 
 // ---------- Stockage (data.json) : règlement accepté + vouchs ----------
 const DATA_FILE = path.join(__dirname, 'data.json');
@@ -53,7 +54,7 @@ client.once('clientReady', () => console.log(`Connecté en tant que ${client.use
 // ---------- Panel "Nous sommes fiables" ----------
 function legitEmbed() {
   return new EmbedBuilder()
-    .setColor(config.color)
+    .setColor(config.legitColor)
     .setTitle('✅ Nous sommes fiables')
     .setDescription(
       [
@@ -121,7 +122,7 @@ client.on('messageCreate', async (m) => {
         );
       }
       container
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${config.serverName} Tickets\n${config.description}`))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${emo}${config.serverName} Tickets\n${config.description}`))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small))
         .addActionRowComponents(new ActionRowBuilder().addComponents(menu))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(`-# ${config.footer}`));
@@ -340,7 +341,7 @@ async function openTicket(i, key, payKey, optIdx) {
 
   const embed = new EmbedBuilder()
     .setColor(config.color)
-    .setTitle(`${p.label}${opt ? ` — ${opt.label}` : ''}`)
+    .setTitle(`${emo}${p.label}${opt ? ` — ${opt.label}` : ''}`)
     .setDescription(`Bienvenue ${i.user}, un membre du staff arrive pour s'occuper de toi.`)
     .addFields(
       { name: 'Produit', value: `${p.emoji} ${p.label}${opt ? ` ${opt.label}` : ''}`, inline: true },

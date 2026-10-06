@@ -17,7 +17,7 @@ module.exports = {
   // Emoji perso affiché devant le titre du panel et des embeds de tickets ('' = aucun)
   titleEmoji: '<:tic:1552741225092882525>',
   color: 0xe11d2e, // rouge
-  legitColor: 0x2b7fff, // bleu (panel "Nous sommes fiables")
+  legitColor: 0xe11d2e, // bleu (panel "Nous sommes fiables")
   description: '★ ★ ★ ★ ★  •  `Legit Shop` !\n-# « Simple, rapide, efficace. ».',
   footer: 'Source · Shop',
 

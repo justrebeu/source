@@ -53,7 +53,7 @@ module.exports = {
       options: [{ label: 'Décoration', price: 1.5 }],
     },
     giveaway: { label: 'Giveaway', description: '', emoji: '🎁', options: [] },
-    snap: {
+    cc: {
       label: 'CC',
       description: '',
       emoji: '💳',
@@ -64,7 +64,7 @@ module.exports = {
         { label: 'CC Entreprise', price: 142.80 },
       ],
     },
-    Snap +: {
+    snap: {
       label: 'Snap +',
       description: '',
       emoji: '<:snapchat:1549917398939992124>',

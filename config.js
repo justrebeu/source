@@ -54,6 +54,17 @@ module.exports = {
     },
     giveaway: { label: 'Giveaway', description: '', emoji: '🎁', options: [] },
     snap: {
+      label: 'CC',
+      description: '',
+      emoji: '💳',
+      options: [
+        { label: 'CC Basic', price: 10 },
+        { label: 'CC Platinium', price: 21,40. },
+        { label: 'CC Buisness', price: 72.80 },
+        { label: 'CC Entreprise', price: 142.80 },
+      ],
+    },
+    Snap +: {
       label: 'Snap +',
       description: '',
       emoji: '<:snapchat:1549917398939992124>',
@@ -62,7 +73,7 @@ module.exports = {
         { label: '6 mois', price: 12 },
         { label: '12 mois', price: 24 },
       ],
-    },
+    }, 
     discord_account: { label: 'Discord compte', description: '', emoji: '<:account:1552760568006447114>', options: [] },
     account: { label: 'Account', description: '', emoji: '<:account:1552760568006447114>', options: [] },
     fournisseur: {

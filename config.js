@@ -59,7 +59,7 @@ module.exports = {
       emoji: '💳',
       options: [
         { label: 'CC Basic', price: 10 },
-        { label: 'CC Platinium', price: 21,40. },
+        { label: 'CC Platinium', price: 21.40 },
         { label: 'CC Buisness', price: 72.80 },
         { label: 'CC Entreprise', price: 142.80 },
       ],

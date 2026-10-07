@@ -18,11 +18,14 @@ const {
   TextDisplayBuilder,
   SeparatorBuilder,
   SeparatorSpacingSize,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
 } = require('discord.js');
 const config = require('./config');
 
 const PREFIX = '+';
-const { TOKEN, TICKET_CATEGORY_ID, STAFF_ROLE_ID, VERIFIED_ROLE_ID } = process.env;
+const { TOKEN, TICKET_CATEGORY_ID, STAFF_ROLE_ID, VERIFIED_ROLE_ID, REVIEWS_CHANNEL_ID } = process.env;
 const EPHEMERAL = MessageFlags.Ephemeral;
 
 const client = new Client({
@@ -41,9 +44,9 @@ const DATA_FILE = path.join(__dirname, 'data.json');
 function loadData() {
   try {
     const d = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-    return { accepted: d.accepted || [], vouches: d.vouches || {} };
+    return { accepted: d.accepted || [], vouches: d.vouches || {}, reviews: d.reviews || [] };
   } catch {
-    return { accepted: [], vouches: {} };
+    return { accepted: [], vouches: {}, reviews: [] };
   }
 }
 let data = loadData();
@@ -90,6 +93,79 @@ function ticketRow({ claimed = false, done = false } = {}) {
 }
 const btnState = (msg, id) => msg.components[0]?.components.find((c) => c.customId === id)?.disabled ?? false;
 
+// ---------- Avis ----------
+const REVIEW_PAGE_SIZE = 5;
+const REVIEW_COOLDOWN = 60 * 60 * 1000; // 1 avis par heure et par personne
+const stars = (n) => '⭐'.repeat(n) + '☆'.repeat(5 - n);
+
+function reviewsPage(page = 0) {
+  const all = [...data.reviews].reverse(); // plus récents d'abord
+  const pages = Math.max(1, Math.ceil(all.length / REVIEW_PAGE_SIZE));
+  page = Math.min(Math.max(page, 0), pages - 1);
+
+  const embed = new EmbedBuilder().setColor(config.color).setTitle(`⭐ Avis ${config.serverName}`);
+  if (!all.length) {
+    embed.setDescription('Aucun avis pour le moment.');
+    return { embeds: [embed], components: [] };
+  }
+
+  const avg = (all.reduce((s, r) => s + r.rating, 0) / all.length).toFixed(1).replace('.', ',');
+  const lines = all
+    .slice(page * REVIEW_PAGE_SIZE, (page + 1) * REVIEW_PAGE_SIZE)
+    .map(
+      (r) =>
+        `${stars(r.rating)} — **${r.username}** · <t:${Math.floor(r.date / 1000)}:R>\n> ${r.comment.replace(/\n/g, '\n> ')}`
+    );
+  embed
+    .setDescription(`**${avg}/5** · ${all.length} avis\n\n${lines.join('\n\n')}`)
+    .setFooter({ text: `Page ${page + 1}/${pages}` });
+
+  const components = [];
+  if (pages > 1) {
+    components.push(
+      new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId(`avis:${page - 1}`).setLabel('◀').setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
+        new ButtonBuilder().setCustomId(`avis:${page + 1}`).setLabel('▶').setStyle(ButtonStyle.Secondary).setDisabled(page >= pages - 1)
+      )
+    );
+  }
+  return { embeds: [embed], components };
+}
+
+async function onModal(i) {
+  if (i.customId !== 'review_modal') return;
+
+  const rating = Number(i.fields.getTextInputValue('rating').trim());
+  const comment = i.fields.getTextInputValue('comment').trim();
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return i.reply({ content: 'La note doit être un nombre entier entre 1 et 5.', flags: EPHEMERAL });
+  }
+
+  const last = [...data.reviews].reverse().find((r) => r.user === i.user.id);
+  if (last && Date.now() - last.date < REVIEW_COOLDOWN) {
+    return i.reply({ content: 'Tu as déjà laissé un avis il y a peu. Réessaie un peu plus tard.', flags: EPHEMERAL });
+  }
+
+  data.reviews.push({ user: i.user.id, username: i.user.username, rating, comment, date: Date.now() });
+  saveData();
+
+  // Poste l'avis dans un salon (optionnel)
+  if (REVIEWS_CHANNEL_ID) {
+    const ch = await client.channels.fetch(REVIEWS_CHANNEL_ID).catch(() => null);
+    if (ch) {
+      const embed = new EmbedBuilder()
+        .setColor(config.color)
+        .setTitle(stars(rating))
+        .setDescription(comment)
+        .setAuthor({ name: i.user.username, iconURL: i.user.displayAvatarURL() })
+        .setFooter({ text: config.footer });
+      await ch.send({ embeds: [embed] }).catch(console.error);
+    }
+  }
+
+  return i.reply({ content: 'Merci pour ton avis ! ⭐', flags: EPHEMERAL });
+}
+
 // ---------- Commandes à préfixe ----------
 client.on('messageCreate', async (m) => {
   if (m.author.bot || !m.guild || !m.content.startsWith(PREFIX)) return;
@@ -135,6 +211,26 @@ client.on('messageCreate', async (m) => {
     if (cmd === 'legit' && isAdmin) {
       await m.channel.send({ embeds: [legitEmbed()], components: [legitRow()] });
       return m.delete().catch(() => {});
+    }
+
+    // +avispanel : panel pour laisser un avis (admin)
+    if (cmd === 'avispanel' && isAdmin) {
+      const embed = new EmbedBuilder()
+        .setColor(config.color)
+        .setTitle('⭐ Votre avis compte')
+        .setDescription(
+          `*Partagez votre expérience avec ${config.serverName}*\n\nCliquez ci-dessous pour laisser une **note** et un **commentaire**.`
+        );
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('review_open').setLabel('Laisser un avis').setEmoji('⭐').setStyle(ButtonStyle.Success)
+      );
+      await m.channel.send({ embeds: [embed], components: [row] });
+      return m.delete().catch(() => {});
+    }
+
+    // +avis : tous les avis
+    if (cmd === 'avis') {
+      return m.reply({ ...reviewsPage(0), allowedMentions: { parse: [] } });
     }
 
     // +paypal : infos de paiement PayPal
@@ -219,6 +315,7 @@ client.on('interactionCreate', async (i) => {
   try {
     if (i.isStringSelectMenu()) return await onSelect(i);
     if (i.isButton()) return await onButton(i);
+    if (i.isModalSubmit()) return await onModal(i);
   } catch (e) {
     console.error(e);
     const msg = { content: 'Une erreur est survenue.', flags: EPHEMERAL };
@@ -291,6 +388,23 @@ async function openTicket(i, key, payKey, optIdx) {
   const opt = optIdx === null ? null : p.options[optIdx];
   const guild = i.guild;
 
+  // Vérifie la config avant de créer le ticket
+  if (!STAFF_ROLE_ID || !guild.roles.cache.has(STAFF_ROLE_ID)) {
+    console.error(`STAFF_ROLE_ID invalide ("${STAFF_ROLE_ID}") : ce n'est pas un rôle de ce serveur.`);
+    return i.update({
+      content: 'Configuration incomplète (rôle staff introuvable). Préviens un administrateur.',
+      embeds: [],
+      components: [],
+    });
+  }
+
+  // Catégorie des tickets : si l'ID est invalide, on crée le ticket sans catégorie
+  const category = TICKET_CATEGORY_ID ? guild.channels.cache.get(TICKET_CATEGORY_ID) : null;
+  const ticketParent = category && category.type === ChannelType.GuildCategory ? category.id : null;
+  if (TICKET_CATEGORY_ID && !ticketParent) {
+    console.error(`TICKET_CATEGORY_ID invalide ("${TICKET_CATEGORY_ID}") : ce n'est pas une catégorie de ce serveur.`);
+  }
+
   // 1 ticket ouvert max par personne
   const existing = guild.channels.cache.find((c) => c.topic && c.topic.startsWith(`${i.user.id}|`));
   if (existing) {
@@ -304,7 +418,7 @@ async function openTicket(i, key, payKey, optIdx) {
   const channel = await guild.channels.create({
     name: `ticket-${i.user.username}`.slice(0, 90),
     type: ChannelType.GuildText,
-    parent: TICKET_CATEGORY_ID || null,
+    parent: ticketParent,
     // buyerId | produit | option | paiement | staff qui a pris en charge
     topic: [i.user.id, key, optIdx ?? '', payKey, ''].join('|'),
     permissionOverwrites: [
@@ -355,6 +469,41 @@ async function openTicket(i, key, payKey, optIdx) {
 }
 
 async function onButton(i) {
+  // ----- Avis : ouvrir le formulaire -----
+  if (i.customId === 'review_open') {
+    const modal = new ModalBuilder()
+      .setCustomId('review_modal')
+      .setTitle('Laisser un avis')
+      .addComponents(
+        new ActionRowBuilder().addComponents(
+          new TextInputBuilder()
+            .setCustomId('rating')
+            .setLabel('Note sur 5 (1 à 5)')
+            .setStyle(TextInputStyle.Short)
+            .setPlaceholder('5')
+            .setMinLength(1)
+            .setMaxLength(1)
+            .setRequired(true)
+        ),
+        new ActionRowBuilder().addComponents(
+          new TextInputBuilder()
+            .setCustomId('comment')
+            .setLabel('Votre commentaire')
+            .setStyle(TextInputStyle.Paragraph)
+            .setPlaceholder('Rapide, sérieux, au top...')
+            .setMinLength(3)
+            .setMaxLength(500)
+            .setRequired(true)
+        )
+      );
+    return i.showModal(modal);
+  }
+
+  // ----- Avis : changer de page (+avis) -----
+  if (i.customId.startsWith('avis:')) {
+    return i.update(reviewsPage(Number(i.customId.split(':')[1])));
+  }
+
   // ----- Panel règlement -----
   if (i.customId === 'legit_yes') {
     if (!data.accepted.includes(i.user.id)) {
